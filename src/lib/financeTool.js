@@ -1,13 +1,11 @@
-import yahooFinance from 'yahoo-finance2';
+import YahooFinance from 'yahoo-finance2';
 
+// Initialize the YahooFinance instance (Required in newer versions)
 const yahooFinance = new YahooFinance();
-/**
- * Fetches core quantitative financial metrics for a specific stock ticker.
- * @param {string} ticker - The stock ticker symbol (e.g., 'AAPL', 'TSLA').
- */
+
 export async function getFinancialSummary(ticker) {
   try {
-    // Fetch summary profile and key statistics simultaneously
+    // Call methods directly on your new instance variable
     const results = await yahooFinance.quoteSummary(ticker, {
       modules: ['summaryDetail', 'financialData', 'defaultKeyStatistics']
     });
@@ -34,4 +32,4 @@ export async function getFinancialSummary(ticker) {
       error: error.message
     };
   }
-} 
+}
