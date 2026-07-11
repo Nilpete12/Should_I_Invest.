@@ -1,5 +1,40 @@
-@import "tailwindcss/plugin" layer(utilities);
-@import "@tailwindcss/typography";
+@import "tailwindcss";
+
+/* 
+  Custom Production Markdown Style Map 
+  Bypasses the Turbopack @plugin resolution issue while maintaining clean typography
+*/
+.prose h1 {
+  @apply text-3xl font-black text-slate-100 mt-6 mb-4 border-b border-slate-700 pb-2;
+}
+
+.prose h2 {
+  @apply text-2xl font-extrabold text-slate-200 mt-5 mb-3;
+}
+
+.prose h3 {
+  @apply text-xl font-bold text-emerald-400 mt-4 mb-2;
+}
+
+.prose p {
+  @apply text-slate-300 leading-relaxed my-3 text-base;
+}
+
+.prose ul, .prose ol {
+  @apply list-disc pl-5 my-4 space-y-2 text-slate-300;
+}
+
+.prose li {
+  @apply pl-1 text-slate-300;
+}
+
+.prose strong {
+  @apply font-semibold text-emerald-300;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-slate-600 pl-4 italic text-slate-400 my-4;
+}
 
 :root {
   --background: #ffffff;
@@ -24,4 +59,19 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Core Layout Utility Keyframes for High-Fidelity UI */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
