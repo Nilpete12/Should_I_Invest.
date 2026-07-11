@@ -3,7 +3,7 @@ import { getFinancialSummary } from "./financeTool";
 
 // Configuration for our deterministic, rapid analytical engine
 const model = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash",
+  model: "gemini-3.1-flash-lite",
   temperature: 0, 
   maxRetries: 1,
 });
