@@ -60,6 +60,16 @@ export async function sentimentNode(state) {
 export async function cioNode(state) {
   console.log(`[Agent: CIO] Compiling research pack for final investment thesis...`);
   
+  // Guardrail: Check if the financial auditor successfully pulled metrics
+  const hasValidData = state.financialData && state.financialData.success !== false;
+  
+  if (!hasValidData) {
+    return {
+      decision: "PASS",
+      reasoningMarkdown: `### Executive Analysis Report\n\n**DECISION: PASS**\n\n**Reasoning:** The investment agent network was unable to pull verified financial audit data for the requested entity ("${state.companyInput}"). As a strict risk-mitigation policy, we automatically pass on assets with unverifiable quantitative metrics.`
+    };
+  }
+
   const prompt = `You are the Chief Investment Officer at an elite investment firm. Review this research folder:
   - Stock Ticker: ${state.ticker}
   - Balance Sheet Metrics: ${JSON.stringify(state.financialData)}
@@ -75,8 +85,6 @@ export async function cioNode(state) {
   
   const response = await model.invoke(prompt);
   const content = response.content;
-  
-  // Extracting the final decision type to cleanly store it state-side
   const decision = content.includes("DECISION: INVEST") ? "INVEST" : "PASS";
   
   return {
