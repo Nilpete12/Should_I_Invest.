@@ -5,9 +5,20 @@ const yahooFinance = new YahooFinance();
 
 export async function GET() {
   try {
-    const targetTickers = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'GOOGL', 'AMZN'];
+    // Expanded index matrix to exactly 10 high-impact tickers
+    const targetTickers = [
+      'AAPL',  // Apple
+      'MSFT',  // Microsoft
+      'NVDA',  // NVIDIA
+      'TSLA',  // Tesla
+      'GOOGL', // Alphabet
+      'AMZN',  // Amazon
+      'META',  // Meta Platforms
+      'NFLX',  // Netflix
+      'AMD',   // Advanced Micro Devices
+      'JPM'    // JPMorgan Chase
+    ];
     
-    // Fetch summaries for all top tickers in parallel for optimal latency
     const quotes = await Promise.all(
       targetTickers.map(async (ticker) => {
         try {
