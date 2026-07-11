@@ -78,23 +78,41 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-400">
       
-      {/* Dynamic Scrolling Market Banner */}
-      <div className="w-full bg-[#131a2e] border-b border-slate-800 text-xs py-2.5 overflow-hidden shadow-sm">
-        <div className="flex whitespace-nowrap gap-8 px-4 animate-[marquee_25s_linear_infinite] hover:[animation-play-state:paused] cursor-pointer">
-          {marketWatch.length > 0 ? (
-            marketWatch.map((stock) => (
-              <div key={stock.ticker} className="flex items-center gap-2 bg-[#1b243d] px-3 py-1 rounded-md border border-slate-700/40">
+      {/* Seamless Custom Infinite Loop Ticker Ribbon */}
+      <div className="w-full bg-[#131a2e] border-b border-slate-800 text-xs py-2.5 overflow-hidden shadow-sm flex">
+        {marketWatch.length > 0 ? (
+          /* 
+            The Seamless Magic: We adjust animation duration to 45s to account for the wider list.
+            We use flex-nowrap and duplicate the array inline inside the flex row.
+          */
+          <div className="flex flex-nowrap whitespace-nowrap gap-8 animate-[marquee_45s_linear_infinite] hover:[animation-play-state:paused] cursor-pointer pr-8">
+            
+            {/* Set 1: The Initial 10 Companies */}
+            {marketWatch.map((stock) => (
+              <div key={`set1-${stock.ticker}`} className="flex items-center gap-2 bg-[#1b243d] px-3 py-1 rounded-md border border-slate-700/40 shrink-0">
                 <span className="font-bold text-slate-300">{stock.ticker}</span>
                 <span className="font-mono text-slate-200">${stock.price.toFixed(2)}</span>
                 <span className={`font-mono text-xs ${stock.changePercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {stock.changePercent >= 0 ? '▲' : '▼'} {Math.abs(stock.changePercent).toFixed(2)}%
                 </span>
               </div>
-            ))
-          ) : (
-            <div className="text-slate-500 italic">Streaming core market indexes from Yahoo Finance...</div>
-          )}
-        </div>
+            ))}
+
+            {/* Set 2: The Carbon Copy Duplicate for Seamless Transition */}
+            {marketWatch.map((stock) => (
+              <div key={`set2-${stock.ticker}`} className="flex items-center gap-2 bg-[#1b243d] px-3 py-1 rounded-md border border-slate-700/40 shrink-0">
+                <span className="font-bold text-slate-300">{stock.ticker}</span>
+                <span className="font-mono text-slate-200">${stock.price.toFixed(2)}</span>
+                <span className={`font-mono text-xs ${stock.changePercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {stock.changePercent >= 0 ? '▲' : '▼'} {Math.abs(stock.changePercent).toFixed(2)}%
+                </span>
+              </div>
+            ))}
+
+          </div>
+        ) : (
+          <div className="text-slate-500 italic px-4 py-1">Streaming core market indexes from Yahoo Finance...</div>
+        )}
       </div>
 
       {/* Main Structural Space with Conditional Spacing Transformations */}

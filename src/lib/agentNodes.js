@@ -13,16 +13,36 @@ const model = new ChatGoogleGenerativeAI({
  * Translates messy text inputs into clean exchange shortcuts.
  */
 export async function resolverNode(state) {
-  console.log(`[Agent: Resolver] Resolving input: "${state.companyInput}"`);
+  console.log(`[Agent: Resolver] Querying Yahoo Search Index for: "${state.companyInput}"`);
   
-  const prompt = `You are a stock market ticker expert. Look at this user input: "${state.companyInput}". 
-  Identify the target company and respond ONLY with its valid stock market ticker symbol (e.g., AAPL, TSLA, MSFT, GOOGL). 
-  Do not write full sentences, explanations, or use punctuation. Return just the raw uppercase ticker letters.`;
+  let searchContext = "No direct database matches discovered.";
+  
+  try {
+    // Actively fetch live matching options straight from Yahoo Finance's indexing engine
+    const searchData = await yahooFinance.search(state.companyInput);
+    if (searchData && searchData.quotes && searchData.quotes.length > 0) {
+      searchContext = JSON.stringify(
+        searchData.quotes.slice(0, 3).map(item => ({
+          symbol: item.symbol,
+          name: item.shortname || item.longname,
+          exchange: item.exchange
+        }))
+      );
+    }
+  } catch (err) {
+    console.warn("[Resolver Warning] Live index search dropped, falling back to LLM inference:", err.message);
+  }
+
+  const prompt = `You are an elite quantitative trade routing assistant. The user wants to audit: "${state.companyInput}".
+  Here are the top live matching corporate entries pulled directly from the Yahoo Finance search database index:
+  ${searchContext}
+  
+  Analyze the choices. Select the single absolute best matching ticker symbol string for the user's intent.
+  Respond ONLY with the raw uppercase symbol (e.g. TATAMOTORS.NS, TCS.NS, AAPL, TSLA). Do not include markdown blocks, spaces, explanations, or trailing punctuation.`;
   
   const response = await model.invoke(prompt);
   const resolvedTicker = response.content.trim().toUpperCase();
   
-  // Returning fields updates those specific items inside the global state
   return { ticker: resolvedTicker };
 }
 
